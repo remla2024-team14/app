@@ -1,2 +1,2 @@
 # app
-Spam detection application containing frontend and service
+URL fishing detection application containing frontend and service
