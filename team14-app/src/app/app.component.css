@@ -1,0 +1,7 @@
+.main {
+  display: flex;
+  justify-content: center;  /* Centers horizontally */
+  align-items: center;      /* Centers vertically */
+  height: 75vh;            /* Full viewport height */
+  margin: 0;                /* Reset default margin */
+}
