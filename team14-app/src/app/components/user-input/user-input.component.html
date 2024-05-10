@@ -1,0 +1,6 @@
+<h3>Spam or ham</h3>
+<input type="text" [(ngModel)]="inputUrl" placeholder="url">
+<select [(ngModel)]="selectedModel">
+  <option *ngFor="let model of models" [value]="model">{{ model }}</option>
+</select>
+<button (click)="predict()">Predict</button>
