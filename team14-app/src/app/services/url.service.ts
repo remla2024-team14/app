@@ -8,12 +8,12 @@ export class UrlService {
 
   constructor(private httpClient: HttpClient) { }
 
-  predict(modelName: string, inputUrl: string) {
+  predict(modelName: string, inputUrl: string, target: string | undefined) {
     const payload = {
       model_name: modelName,
       input_url: inputUrl
     };
 
-    return this.httpClient.post<any>('0.0.0.0:5000/predict', payload);
+    return this.httpClient.post<any>(<string>target, payload);
   }
 }
