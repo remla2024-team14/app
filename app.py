@@ -35,7 +35,7 @@ def predict():
         response.raise_for_status()
 
         # do something with the predicted value
-        
+
     except requests.exceptions.RequestException as e:
         # Handle connection errors, timeouts, etc.
         prediction = {'error': 'Failed to reach model service', 'exception': str(e)}
