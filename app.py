@@ -30,14 +30,15 @@ def predict():
         'model_name': model_choice
     }
 
-    # POST request to model service
-    response = requests.post(model_service_url, json=payload)
+    try:
+        response = requests.post(model_service_url, json=payload, timeout=10)  # timeout in seconds
+        response.raise_for_status()
 
-    # Prediction from model service
-    if response.status_code == 200:
-        prediction = response.json()
-    else:
-        prediction = {'error': 'Failed to get prediction from the model service'}
+        # do something with the predicted value
+        
+    except requests.exceptions.RequestException as e:
+        # Handle connection errors, timeouts, etc.
+        prediction = {'error': 'Failed to reach model service', 'exception': str(e)}
 
     # Response
     return jsonify({
