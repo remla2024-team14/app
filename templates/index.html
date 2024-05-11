@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Team 14</title>
+    <meta charset="UTF-8">
+    <title>Model Prediction Form</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Spam or Ham</h1>
+    <h1>Model Prediction Form</h1>
+    <p>Library Version: v{{ version }}</p>
     <form action="/predict" method="post">
         <label for="input_text">Enter Text:</label>
         <input type="text" id="input_text" name="input_text" required><br><br>
