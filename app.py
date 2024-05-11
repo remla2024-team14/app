@@ -34,7 +34,7 @@ def predict():
         response = requests.post(model_service_url, json=payload, timeout=10)  # timeout in seconds
         response.raise_for_status()
 
-        # do something with the predicted value
+        # should get the response and return "prediction"
 
     except requests.exceptions.RequestException as e:
         # Handle connection errors, timeouts, etc.
