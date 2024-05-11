@@ -1,8 +1,14 @@
+import os
+
+from dotenv import load_dotenv
 from flask import Flask, request, render_template, jsonify
+from flask_cors import CORS
 from libversion import VersionUtil
 import requests
 
 app = Flask(__name__)
+CORS(app)
+load_dotenv()
 
 
 @app.route('/')
@@ -17,7 +23,7 @@ def predict():
     text = request.form['input_text']
     model_choice = request.form['model_select']
 
-    model_service_url = 'http://0.0.0.0:5000/predict'
+    model_service_url = os.getenv("MODEL_SERVICE_URL"),
 
     payload = {
         'input_url': text,
