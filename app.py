@@ -1,13 +1,11 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask, request, render_template, jsonify
-from flask_cors import CORS
+from flask import Flask, request, render_template
 from libversion import VersionUtil
 import requests
 
 app = Flask(__name__)
-CORS(app)
 load_dotenv()
 
 
@@ -34,18 +32,12 @@ def predict():
         response = requests.post(model_service_url, json=payload, timeout=10)  # timeout in seconds
         response.raise_for_status()
 
-        # should get the response and return "prediction"
-
+        # should get the response and return prediction
+        return response.text
     except requests.exceptions.RequestException as e:
         # Handle connection errors, timeouts, etc.
-        prediction = {'error': 'Failed to reach model service', 'exception': str(e)}
-
-    # Response
-    return jsonify({
-        "input": text,
-        "model_used": model_choice,
-        "prediction": prediction
-    })
+        error = {'error': 'Failed to reach model service', 'exception': str(e)}
+        return error
 
 
 if __name__ == '__main__':
