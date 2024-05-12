@@ -23,7 +23,7 @@ def predict():
     text = request.form['input_text']
     model_choice = request.form['model_select']
 
-    model_service_url = os.getenv("MODEL_SERVICE_URL"),
+    model_service_url = os.getenv("MODEL_SERVICE_URL")
 
     payload = {
         'input_url': text,
