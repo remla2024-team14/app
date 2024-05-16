@@ -34,16 +34,19 @@ Hence, in `.env` please set `MODEL_SERVICE_URL=http://<model-service-ip-arg>:500
 
 # Vagrant
 
-NOTE: unsure if it works for arm, cause I cannot test it
-Make sure you have vagrant and VirtualBox/VMWare installed.
-Navigate to the vagrantfile for ARM or x86(normal) and run `vagrant up` in terminal. It will create 1 controller node and 2 worker nodes.
-IP has been made static for more convenient later use with kubernetes
+*NOTE: unsure if it works for ARM, cause I cannot test it.*
 
-# Vagrant config
+Make sure you have Vagrant and VirtualBox/VMWare installed.
+Navigate to the Vagrantfile for ARM or x86 (normal) and run `vagrant up` in terminal. It will create 1 controller node and 2 worker nodes.
+IP has been made static for more convenient later use with Kubernetes.
+
+## Vagrant Config
 
 Controller node IP is:
 
 `CONTROLLER_IP = "192.168.50.10"`
 
-X = {11, 12}
+`X = {11, 12}`
 `NETWORK_PREFIX = "192.168.50.X"`
+
+Furthermore, the names are "controller", "node1" and "node2". You can run them by using `vagrant ssh <NAME>` from the directory that contains the Vagrantfile.
