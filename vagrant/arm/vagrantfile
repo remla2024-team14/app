@@ -21,9 +21,9 @@ Vagrant.configure("2") do |config|
   config.vm.define "controller" do |controller|
     controller.vm.hostname = "controller"
     controller.vm.provider "vmware_desktop" do |v|
-      v.name = "controller"
-      v.vmx[" memsize "] = "4096"
-      v.vmx[" numvcpus "] = "1"
+      v.vmx["name"] = "controller"
+      v.vmx["memsize"] = "4096"
+      v.vmx["numvcpus"] = "1"
     end
   end
 
@@ -32,9 +32,9 @@ Vagrant.configure("2") do |config|
     config.vm.define "node#{i}" do |node|
       node.vm.hostname = "node#{i}"
       node.vm.provider "vmware_desktop" do |v|
-        v.name = "node#{i}"
-        v.vmx[" memsize "] = "4096"
-        v.vmx[" numvcpus "] = "2"
+        v.vmx["name"] = "node#{i}"
+        v.vmx["memsize"] = "4096"
+        v.vmx["numvcpus"] = "2"
       end
     end
   end
