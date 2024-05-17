@@ -32,3 +32,21 @@ In `model-service` you had to choose `<ip-arg>` as well, this argument serves as
 Hence, in `.env` please set `MODEL_SERVICE_URL=http://<model-service-ip-arg>:5000/predict` e.g. `MODEL_SERVICE_URL=http://172.0.0.4:5000/predict`.
 
 
+# Vagrant
+
+*NOTE: unsure if it works for ARM, cause I cannot test it.*
+
+Make sure you have Vagrant and VirtualBox/VMWare installed.
+Navigate to the Vagrantfile for ARM or x86 (normal) and run `vagrant up` in terminal. It will create 1 controller node and 2 worker nodes.
+IP has been made static for more convenient later use with Kubernetes.
+
+## Vagrant Config
+
+Controller node IP is:
+
+`CONTROLLER_IP = "192.168.50.10"`
+
+`X = {11, 12}`
+`NETWORK_PREFIX = "192.168.50.X"`
+
+Furthermore, the names are "controller", "node1" and "node2". You can run them by using `vagrant ssh <NAME>` from the directory that contains the Vagrantfile.
