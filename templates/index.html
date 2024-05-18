@@ -63,16 +63,25 @@
         });
 
         $("#feedback-yes").on("click", function () {
-          $("#result").append("<p>Thank you for your feedback!</p>");
-          $("#feedback-section").hide();
+          sendFeedback("yes");
         });
 
         $("#feedback-no").on("click", function () {
-          $("#result").append(
-            "<p>We appreciate your feedback and will look into this!</p>"
-          );
-          $("#feedback-section").hide();
+          sendFeedback("no");
         });
+
+        function sendFeedback(feedback) {
+          $.ajax({
+            url: "/feedback",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ feedback: feedback }),
+            success: function () {
+              $("#result").append("<p>Thank you for your feedback!</p>");
+              $("#feedback-section").hide();
+            },
+          });
+        }
       });
     </script>
   </body>
