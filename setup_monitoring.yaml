@@ -1,0 +1,25 @@
+---
+- hosts: controller
+  tasks:
+    - name: Install Helm
+      shell: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+    - name: Add Helm repos
+      shell: helm repo add stable https://charts.helm.sh/stable
+
+    - name: Install Kubernetes Dashboard
+      shell: helm install kubernetes-dashboard stable/kubernetes-dashboard --namespace kube-system
+
+    - name: Install Prometheus
+      shell: helm install prometheus stable/prometheus --namespace monitoring
+
+    - name: Install Grafana
+      shell: helm install grafana stable/grafana --namespace monitoring
+
+    - name: Create NodePort service for Grafana
+      shell: |
+        kubectl expose deployment grafana --type=NodePort --name=grafana-service --namespace monitoring
+
+    - name: Create NodePort service for Prometheus
+      shell: |
+        kubectl expose deployment prometheus-server --type=NodePort --name=prometheus-service --namespace monitoring

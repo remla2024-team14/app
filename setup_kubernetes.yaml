@@ -1,0 +1,13 @@
+---
+- hosts: controller
+  tasks:
+    - name: Install k3d
+      shell: curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+
+    - name: Create Kubernetes cluster with k3d
+      shell: k3d cluster create mycluster --servers 1 --agents {{ number_of_workers }} --port "8080:80@loadbalancer"
+
+- hosts: nodes
+  tasks:
+    - name: Install kubectl
+      shell: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && chmod +x kubectl && mv kubectl /usr/local/bin/
