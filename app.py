@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, render_template, jsonify
 from dotenv import load_dotenv
 import requests
+from libversion import VersionUtil
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
 from time import time
 
