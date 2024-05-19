@@ -1,5 +1,7 @@
 ---
 - hosts: controller
+  vars:
+    number_of_workers: 2  #initialize
   tasks:
     - name: Install k3d
       shell: curl -s https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
