@@ -1,24 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Team 14</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
     <h1>URL Phishing Detection</h1>
     <p>Library Version: {{ version }}</p>
-    <form action="/predict" method="post">
-        <label for="input_text">Enter Text:</label>
-        <input type="text" id="input_text" name="input_text" required><br><br>
+    <form id="predict-form">
+      <label for="input_text">Enter Text:</label>
+      <input
+        type="text"
+        id="input_text"
+        name="input_text"
+        required
+      /><br /><br />
 
-        <label for="model_select">Choose a model:</label>
-        <select id="model_select" name="model_select">
-            <option value="model.keras">model.keras</option>
-            <option value="model2">Model 2</option>
-        </select><br><br>
+      <label for="model_select">Choose a model:</label>
+      <select id="model_select" name="model_select">
+        <option value="model.keras">model.keras</option>
+        <option value="model.h5">model.h5</option></select
+      ><br /><br />
 
-        <button type="submit">Submit</button>
+      <button type="submit">Submit</button>
     </form>
-</body>
+    <p id="result"></p>
+    <div id="feedback-section" style="display: none">
+      <p>Is this prediction accurate?</p>
+      <button id="feedback-yes">Yes</button>
+      <button id="feedback-no">No</button>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        $("#predict-form").on("submit", function (event) {
+          event.preventDefault();
+
+          $.ajax({
+            url: "/predict",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (response) {
+              if (response.error) {
+                $("#result").text("Error: " + response.error);
+              } else {
+                $("#result").text(response.prediction);
+                $("#feedback-section").show();
+              }
+            },
+            error: function (xhr, status, error) {
+              $("#result").text(
+                "Failed to reach model service: " + xhr.responseText
+              );
+            },
+          });
+        });
+
+        $("#feedback-yes").on("click", function () {
+          sendFeedback("yes");
+        });
+
+        $("#feedback-no").on("click", function () {
+          sendFeedback("no");
+        });
+
+        function sendFeedback(feedback) {
+          $.ajax({
+            url: "/feedback",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ feedback: feedback }),
+            success: function () {
+              $("#result").append("<p>Thank you for your feedback!</p>");
+              $("#feedback-section").hide();
+            },
+          });
+        }
+      });
+    </script>
+  </body>
 </html>
