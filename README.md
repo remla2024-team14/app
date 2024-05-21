@@ -30,25 +30,3 @@ To start a container from your image, use this command: `docker run -p 8000:8000
 
 In `model-service` you had to choose `<ip-arg>` as well, this argument serves as your `MODEL_SERVICE_URL`
 Hence, in `.env` please set `MODEL_SERVICE_URL=http://<model-service-ip-arg>:5000/predict` e.g. `MODEL_SERVICE_URL=http://172.0.0.4:5000/predict`.
-
-
-# Vagrant
-
-*NOTE: unsure if it works for ARM, cause I cannot test it.*
-
-Make sure you have Vagrant and VirtualBox/VMWare installed.
-Navigate to the Vagrantfile for ARM or x86 (normal) and run `vagrant up` in terminal. It will create 1 controller node and 2 worker nodes.
-IP has been made static for more convenient later use with Kubernetes.
-
-## Vagrant Config
-
-Controller node IP is:
-
-`CONTROLLER_IP = "192.168.50.10"`
-
-`X = {11, 12}`
-`NETWORK_PREFIX = "192.168.50.X"`
-
-Furthermore, the names are "controller", "node1" and "node2". You can run them by using `vagrant ssh <NAME>` from the directory that contains the Vagrantfile.
-
-To test the communication between the VMs I ran all the VMs on different terminals. You can check the IP of the VM by typing `ip address` on their respective terminals. I then pinged every other VM from one of the other VMs using `ping <IP_ADDRESS>` and I did this for all of them. The result from node1 to node2 looks like this: ![image](https://github.com/remla2024-team14/app/assets/72865119/e8be97a1-d1cc-4311-91da-37469c3874a3).
