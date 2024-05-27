@@ -11,39 +11,54 @@ on:
       - 'v*' # Trigger on tags that start with 'v'
 
 env:
-  IMG: ghcr.io/remla2024-team14/app:latest
+  REPO: ghcr.io/remla2024-team14/app
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Extract version
-      id: version
-      run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
+      - name: Extract version
+        id: version
+        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
 
-    - name: Build Docker image
-      run: docker build -t app .
+      - name: Log into GitHub Container Registry
+        run: echo "${{ secrets.TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-    - name: Log into GitHub Container Registry
-      run: echo "${{ secrets.TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Get Digest of Latest Image
+        id: get_digest
+        run: |
+          TOKEN=${{ secrets.TOKEN }}
+          REPO=ghcr.io/remla2024-team14/app
+          DIGEST=$(curl -s -H "Authorization: Bearer $TOKEN" https://ghcr.io/v2/${REPO}/manifests/latest | jq -r '.config.digest')
+          echo "digest=$DIGEST" >> $GITHUB_ENV
 
-    - name: Tag Docker image
-      run: docker tag app ${{ env.IMG }}
+      - name: Tag Previous Image
+        if: steps.get_digest.outputs.digest != ''
+        run: |
+          docker pull $REPO@sha256:${{ env.digest }}
+          docker tag $REPO@sha256:${{ env.digest }} $REPO:previous
+          docker push $REPO:previous
 
-    - name: Push Docker image to GitHub Container Registry
-      run: docker push ${{ env.IMG }}
+      - name: Build Docker image
+        run: docker build -t app .
 
-    - name: Trigger release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      with:
-        tag_name: ${{ steps.version.outputs.version }}
-        release_name: Release ${{ steps.version.outputs.version }}
-        body: |
-          Release app
+      - name: Tag Docker image as LATEST
+        run: docker tag app ${{ env.REPO }}:latest
+
+      - name: Push Docker image to GitHub Container Registry
+        run: docker push ${{ env.REPO }}:latest
+
+      - name: Trigger release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: Release ${{ steps.version.outputs.version }}
+          body: |
+            Release app
 
