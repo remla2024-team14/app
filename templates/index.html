@@ -24,7 +24,6 @@
 
       <label for="model_select">Choose a model:</label>
       <select id="model_select" name="model_select">
-        <option value="model.keras">model.keras</option>
         <option value="model.h5">model.h5</option></select
       ><br /><br />
 
@@ -32,7 +31,7 @@
     </form>
     <p id="result"></p>
     <div id="feedback-section" style="display: none">
-      <p>Is this prediction accurate?</p>
+      <p>Are you satisfied with this prediction?</p>
       <button id="feedback-yes">Yes</button>
       <button id="feedback-no">No</button>
     </div>
@@ -50,7 +49,9 @@
               if (response.error) {
                 $("#result").text("Error: " + response.error);
               } else {
-                $("#result").text(response.prediction);
+                $("#result").text(
+                  "Probability of phishing scam: " + response.prediction
+                );
                 $("#feedback-section").show();
               }
             },
