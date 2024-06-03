@@ -39,9 +39,15 @@ def predict():
         response.raise_for_status()
         duration = time() - start_time
 
-        prediction = response.text
+        prediction = float(response.text)
 
-        return jsonify({'prediction': prediction})
+        if prediction < 0.5:
+            result = "phishing"
+        else:
+            result = "valid"
+
+
+        return jsonify({'prediction': result})
     except requests.exceptions.RequestException as e:
         return jsonify({'error': 'Failed to reach model service', 'exception': str(e)}), 500
 
