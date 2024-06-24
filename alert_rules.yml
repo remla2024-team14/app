@@ -1,11 +1,11 @@
 groups:
-  - name: request_rate
+  - name: flask_app_alerts
     rules:
       - alert: HighRequestRate
-        expr: rate(requests_total[2m]) > 15
+        expr: increase(http_requests_total[2m]) > 10
         for: 2m
         labels:
           severity: critical
         annotations:
-          summary: "High request rate detected"
-          description: "There have been more than 15 requests in the last 2 minutes."
+          summary: "High request rate"
+          description: "There have been more than 10 requests in the last 2 minutes."

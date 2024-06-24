@@ -14,6 +14,11 @@ feedback_yes_counter = Counter('feedback_yes_total', 'Total number of "Yes" feed
 feedback_no_counter = Counter('feedback_no_total', 'Total number of "No" feedbacks')
 inference_time_histogram = Histogram('inference_time_histogram', 'Duration of HTTP requests in seconds', ['method', 'endpoint'])
 in_progress_requests_gauge = Gauge('in_progress_requests', 'Number of requests in progress', ['method', 'endpoint'])
+http_requests_total = Counter('http_requests_total', 'Total number of HTTP requests')
+
+@app.before_request
+def before_request():
+    http_requests_total.inc()
 
 @app.route('/')
 def home():
