@@ -36,4 +36,4 @@ Hence, in `.env` please set `MODEL_SERVICE_URL=http://<model-service-ip-arg>:500
 # Prometheus and AlertManager
 
 To start the prometheus server: `prometheus --config.file=prometheus.yml`
-To start the AlertManager, which will send an email if more than 10 calls were made in the last 2 minutes: `alertmanager --config.file=alertmanager.yml`
+To start the AlertManager, which will send an email if more than 10 calls were made in the last 2 minutes: `alertmanager --config.file=alertmanager.yml`+
