@@ -41,7 +41,7 @@ jobs:
       - name: Push Docker image to GitHub Container Registry
         run: |
           REPO=ghcr.io/remla2024-team14/app
-          # VERSION=${{ steps.version.outputs.version }}
+          VERSION=${{ steps.version.outputs.version }}
           docker push $REPO:$VERSION
           docker push $REPO:latest
 
