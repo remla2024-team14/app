@@ -32,3 +32,8 @@ To start a container from your image, use this command: `docker run -p 8000:8000
 
 In `model-service` you had to choose `<ip-arg>` as well, this argument serves as your `MODEL_SERVICE_URL`
 Hence, in `.env` please set `MODEL_SERVICE_URL=http://<model-service-ip-arg>:5000/predict` e.g. `MODEL_SERVICE_URL=http://172.0.0.4:5000/predict`.
+
+# Prometheus and AlertManager
+
+To start the prometheus server: `prometheus --config.file=prometheus.yml`
+To start the AlertManager, which will send an email if more than 10 calls were made in the last 2 minutes: `alertmanager --config.file=alertmanager.yml`+
