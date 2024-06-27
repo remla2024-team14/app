@@ -34,7 +34,7 @@ jobs:
       # fix: prefix for patch changes
       # feat: prefix for minor changes
       # BREAKING CHANGE: in the commit body or footer for major changes
-      # See https://github.com/semantic-release/semantic-release
+      # See https://github.com/semantic-release/semantic-release for details
       - name: Run semantic-release with automatic bumping
         env: 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
