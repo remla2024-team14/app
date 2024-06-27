@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - 'prerelease/**'
     types:
       - closed
   push:
@@ -17,7 +18,20 @@ jobs:
         contents: write        # Needed for automatic patch bumping
 
     steps:
+      # Add a conditional step to check if the event was a closed PR
+      - name: Check if event is closed PR
+        id: check_closed_pr
+        run: echo "PR_CLOSED=$(jq -r '.pull_request.merged' "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
+
       - name: Checkout code
+        if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}   # Needed for automatic pre-releases
+          fetch-depth: '0'
+      
+      - name: Checkout code
+        if: steps.check_closed_pr.outputs.PR_CLOSED != 'true'
         uses: actions/checkout@v3
 
       - name: Extract version
@@ -27,22 +41,19 @@ jobs:
       - name: Log into GitHub Container Registry
         run: echo "${{ secrets.TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      # Add a conditional step to check if the event was a closed PR
-      - name: Check if event is closed PR
-        id: check_closed_pr
-        run: echo "PR_CLOSED=$(jq -r '.pull_request.merged' "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
-
       # In the case of closing PRs, automatically bump current version (default: patch)
       # Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump. 
       # If no #major, #minor or #patch tag is contained in the merge commit message, it will bump whichever DEFAULT_BUMP is set to
       - name: Bump version and push tag
-        # if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
+        if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
         id: bump
         uses: anothrNick/github-tag-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WITH_V: true                              # Tag with v character           
-          DEFAULT_BUMP: patch                       # Which type of bump to use when none explicitly provided in commit msg
+          WITH_V: true                 # Tag with v character           
+          DEFAULT_BUMP: patch          # Which type of bump to use when none explicitly provided in commit msg
+          PRERELEASE: true             # Define if workflow runs in prerelease mode
+          PRERELEASE_SUFFIX: beta      # Suffix for your prerelease versions. Note this will only be used if a prerelease branch.
 
       - name: Check bump versioning output
         if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
