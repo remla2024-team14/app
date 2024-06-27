@@ -44,7 +44,7 @@ jobs:
       # Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump. 
       # If no #major, #minor or #patch tag is contained in the merge commit message, it will bump whichever DEFAULT_BUMP is set to
       - name: Bump version and push tag
-        # if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
+        if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
         id: bump
         uses: anothrNick/github-tag-action@v1
         env:
@@ -55,7 +55,7 @@ jobs:
           PRERELEASE_SUFFIX: beta      # Suffix for your prerelease versions. Note this will only be used if a prerelease branch.
 
       - name: Check bump versioning output
-        # if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
+        if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
         run: |
           echo "Old Tag: ${{ steps.bump.outputs.old_tag }}"
           echo "New Tag: ${{ steps.bump.outputs.new_tag }}"
