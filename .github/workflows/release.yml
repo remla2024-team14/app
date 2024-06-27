@@ -36,29 +36,45 @@ jobs:
       - name: Parse semantic version from tag
         run: |
           VERSION=${{ steps.version.outputs.version }}
-          MAJOR=`echo "$VERSION" | cut -d . -f 1`
-          MINOR=`echo "$VERSION" | cut -d . -f 2`
-          PATCH=`echo "$VERSION" | cut -d . -f 3`
-          echo "version:$VERSION" >> $GITHUB_ENV
-          echo "version_major:$MAJOR" >> $GITHUB_ENV
-          echo "version_minor:$MINOR" >> $GITHUB_ENV
-          echo "version_patch:$PATCH" >> $GITHUB_ENV
+          if [[ $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            MAJOR=`echo "$VERSION" | cut -d . -f 1 | cut -d v -f 2`
+            MINOR=`echo "$VERSION" | cut -d . -f 2`
+            PATCH=`echo "$VERSION" | cut -d . -f 3`
+            echo "version:$VERSION" >> $GITHUB_ENV
+            echo "version_major:$MAJOR" >> $GITHUB_ENV
+            echo "version_minor:$MINOR" >> $GITHUB_ENV
+            echo "version_patch:$PATCH" >> $GITHUB_ENV
+          else
+            echo "Not a semantic version, skipping semantic version parsing."
+            exit 0
+          fi
 
 
       - name: Tag Docker image with distinct versions
         run: |
           IMG=ghcr.io/${{ github.repository }}
           docker tag app $IMG:${{ env.version }}
-          docker tag app $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
-          docker tag app $IMG:${{ env.version_major }}.latest
           docker tag app $IMG:latest
+          if [[ $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            docker tag app $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
+            docker tag app $IMG:${{ env.version_major }}.latest
+          else
+            echo "Not a semantic version, skipping semantic version docker tags."
+            exit 0
+          fi
 
       - name: Push Docker image to GitHub Container Registry
         run: |
-          REPO=ghcr.io/remla2024-team14/app
-          VERSION=${{ steps.version.outputs.version }}
-          docker push $REPO:$VERSION
-          docker push $REPO:latest
+          IMG=ghcr.io/${{ github.repository }}
+          docker push $IMG:${{ env.version }}
+          docker push $IMG:latest
+          if [[ $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            docker push $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
+            docker push $IMG:${{ env.version_major }}.latest
+          else
+            echo "Not a semantic version, skipping semantic version docker tag pushes."
+            exit 0
+          fi
 
       - name: Trigger release
         uses: actions/create-release@v1
