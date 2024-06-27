@@ -20,8 +20,6 @@ rule_files:
 # Here it's Prometheus itself.
 
 scrape_configs:
-  - job_name: "flask_app"
-    scrape_interval: 10s # Override the global default and scrape the Flask app every 5 seconds.
+  - job_name: "flask_app1"
     static_configs:
-      - targets: ["localhost:8000"] # Replace with the address and port of your Flask app
-
+      - targets: ["localhost:8000", "localhost:9000"]

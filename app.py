@@ -51,7 +51,6 @@ def predict():
         return jsonify({'error': 'Failed to reach model service', 'exception': str(e)}), 500
 
 @app.route('/feedback', methods=['POST'])
-@in_progress_requests_gauge.labels('POST', '/feedback').track_inprogress()
 def feedback():
     feedback_type = request.json.get('feedback')
     if feedback_type == 'yes':
