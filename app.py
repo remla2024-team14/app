@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import requests
 from libversion import VersionUtil
 from prometheus_client import Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_summary import Summary
 from time import time
 
 app = Flask(__name__)
@@ -14,6 +15,7 @@ feedback_yes_counter = Counter('feedback_yes_total', 'Total number of "Yes" feed
 feedback_no_counter = Counter('feedback_no_total', 'Total number of "No" feedbacks')
 inference_time_histogram = Histogram('inference_time_histogram', 'Duration of HTTP requests in seconds', ['method', 'endpoint'])
 in_progress_requests_gauge = Gauge('in_progress_requests', 'Number of requests in progress', ['method', 'endpoint'])
+inference_time_summary = Summary('inference_time_summary', 'Summary of inference times', ['method', 'endpoint'])
 http_requests_total = Counter('http_requests_total', 'Total number of HTTP requests')
 
 @app.before_request
