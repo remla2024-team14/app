@@ -35,10 +35,10 @@ jobs:
       - name: Parse semantic version from tag
         run: |
           VERSION=${GITHUB_REF:11}
-          echo "version:$VERSION" >> $GITHUB_ENV
           MAJOR=`echo "$VERSION" | cut -d . -f 1`
           MINOR=`echo "$VERSION" | cut -d . -f 2`
           PATCH=`echo "$VERSION" | cut -d . -f 3`
+          echo "version:$VERSION" >> $GITHUB_ENV
           echo "version_major:$MAJOR" >> $GITHUB_ENV
           echo "version_minor:$MINOR" >> $GITHUB_ENV
           echo "version_patch:$PATCH" >> $GITHUB_ENV
