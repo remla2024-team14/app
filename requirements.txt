@@ -4,3 +4,4 @@ requests~=2.31.0
 python-dotenv~=1.0.1
 team-14-lib-version
 prometheus_client==0.20.0
+prometheus-summary==0.1.2
