@@ -34,7 +34,7 @@ jobs:
       
       - name: Parse semantic version from tag
         run: |
-          VERSION=${{ steps.version.outputs.version }}
+          VERSION=${{ GITHUB_REF:11 }}    
           echo "version:$VERSION" >> $GITHUB_ENV
           MAJOR=`echo "$VERSION" | cut -d . -f 1 | cut -d v -f 2`
           MINOR=`echo "$VERSION" | cut -d . -f 2`
