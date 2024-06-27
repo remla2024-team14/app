@@ -35,13 +35,13 @@ jobs:
       - name: Parse semantic version from tag
         run: |
           VERSION=${GITHUB_REF:11}
-          MAJOR=`echo "$VERSION" | cut -d . -f 1`
-          MINOR=`echo "$VERSION" | cut -d . -f 2`
-          PATCH=`echo "$VERSION" | cut -d . -f 3`
+          # MAJOR=`echo "$VERSION" | cut -d . -f 1`
+          # MINOR=`echo "$VERSION" | cut -d . -f 2`
+          # PATCH=`echo "$VERSION" | cut -d . -f 3`
           echo "version:$VERSION" >> $GITHUB_ENV
-          echo "version_major:$MAJOR" >> $GITHUB_ENV
-          echo "version_minor:$MINOR" >> $GITHUB_ENV
-          echo "version_patch:$PATCH" >> $GITHUB_ENV
+          # echo "version_major:$MAJOR" >> $GITHUB_ENV
+          # echo "version_minor:$MINOR" >> $GITHUB_ENV
+          # echo "version_patch:$PATCH" >> $GITHUB_ENV
 
 
       - name: Tag Docker image with distinct versions
@@ -49,16 +49,16 @@ jobs:
           IMG=ghcr.io/${{ github.repository }}
           docker tag app $IMG:${{ env.version }}
           docker tag app $IMG:latest
-          docker tag app $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
-          docker tag app $IMG:${{ env.version_major }}.latest
+          # docker tag app $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
+          # docker tag app $IMG:${{ env.version_major }}.latest
 
       - name: Push Docker image to GitHub Container Registry
         run: |
           IMG=ghcr.io/${{ github.repository }}
           docker push $IMG:${{ env.version }}
           docker push $IMG:latest
-          docker push $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
-          docker push $IMG:${{ env.version_major }}.latest
+          # docker push $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
+          # docker push $IMG:${{ env.version_major }}.latest
 
       - name: Trigger release
         uses: actions/create-release@v1
