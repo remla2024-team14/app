@@ -10,9 +10,6 @@ on:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'       # Semantic versioning (e.g., v1.0.0, v2.3.4)
 
-# env:
-#   REPO: ghcr.io/remla2024-team14/app
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -48,7 +45,7 @@ jobs:
           DEFAULT_BUMP: patch                       # Which type of bump to use when none explicitly provided in commit msg
 
       - name: Check bump versioning output
-        # if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
+        if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
         run: |
           echo "Old Tag: ${{ steps.bump.outputs.old_tag }}"
           echo "New Tag: ${{ steps.bump.outputs.new_tag }}"
@@ -62,7 +59,7 @@ jobs:
         id: semantic-version
         run: |
           echo "GITHUB_REF: ${GITHUB_REF}"
-          if [[ "${{ steps.check_closed_pr.outputs.PR_CLOSED }}" != 'true' ]]; then
+          if [[ "${{ steps.check_closed_pr.outputs.PR_CLOSED }}" == 'true' ]]; then
             echo "Case PR closed: the automatically bumped version will be used"
             VERSION=${{ steps.bump.outputs.new_tag }}
           else
