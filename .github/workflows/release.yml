@@ -15,12 +15,30 @@ env:
   REPO: ghcr.io/remla2024-team14/app
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with: 
+          node-version: '14'
+        
+      - name: Install dependencies
+        run: npm ci
+      
+      # semantic-release uses commit messages to determine the type of version bump. Use conventional commit messages for this purpose:
+      # fix: prefix for patch changes
+      # feat: prefix for minor changes
+      # BREAKING CHANGE: in the commit body or footer for major changes
+      # See https://github.com/semantic-release/semantic-release
+      - name: Run semantic-release with automatic bumping
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
 
       - name: Extract version
         id: version
