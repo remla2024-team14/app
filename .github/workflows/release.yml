@@ -8,9 +8,8 @@ on:
       - opened
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"     # Semantic versioning (e.g., v1.0.0, v2.3.4)
-      - "v*-beta.*"                 # Pre-release (e.g., v1.1.0-beta.1, v2.0.0-beta.2)
-      - "v*"                        # Generic tags starting with 'v' (e.g., v1, v2)
+      - "v[0-9]+.[0-9]+.[0-9]+"                  # Semantic versioning (e.g., v1.0.0, v2.3.4)
+      - "v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+"      # Pre-release (e.g., v1.1.0-beta.1, v2.0.0-beta.2)
 
 env:
   REPO: ghcr.io/remla2024-team14/app
@@ -37,17 +36,12 @@ jobs:
         run: |
           VERSION=${{ steps.version.outputs.version }}
           echo "version:$VERSION" >> $GITHUB_ENV
-          if [[ $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            MAJOR=`echo "$VERSION" | cut -d . -f 1 | cut -d v -f 2`
-            MINOR=`echo "$VERSION" | cut -d . -f 2`
-            PATCH=`echo "$VERSION" | cut -d . -f 3`
-            echo "version_major:$MAJOR" >> $GITHUB_ENV
-            echo "version_minor:$MINOR" >> $GITHUB_ENV
-            echo "version_patch:$PATCH" >> $GITHUB_ENV
-          else
-            echo "Not a semantic version, skipping semantic version parsing."
-            exit 0
-          fi
+          MAJOR=`echo "$VERSION" | cut -d . -f 1 | cut -d v -f 2`
+          MINOR=`echo "$VERSION" | cut -d . -f 2`
+          PATCH=`echo "$VERSION" | cut -d . -f 3`
+          echo "version_major:$MAJOR" >> $GITHUB_ENV
+          echo "version_minor:$MINOR" >> $GITHUB_ENV
+          echo "version_patch:$PATCH" >> $GITHUB_ENV
 
 
       - name: Tag Docker image with distinct versions
@@ -55,26 +49,16 @@ jobs:
           IMG=ghcr.io/${{ github.repository }}
           docker tag app $IMG:${{ env.version }}
           docker tag app $IMG:latest
-          if [[ $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            docker tag app $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
-            docker tag app $IMG:${{ env.version_major }}.latest
-          else
-            echo "Not a semantic version, skipping semantic version docker tags."
-            exit 0
-          fi
+          docker tag app $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
+          docker tag app $IMG:${{ env.version_major }}.latest
 
       - name: Push Docker image to GitHub Container Registry
         run: |
           IMG=ghcr.io/${{ github.repository }}
           docker push $IMG:${{ env.version }}
           docker push $IMG:latest
-          if [[ $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            docker push $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
-            docker push $IMG:${{ env.version_major }}.latest
-          else
-            echo "Not a semantic version, skipping semantic version docker tag pushes."
-            exit 0
-          fi
+          docker push $IMG:${{ env.version_major }}.${{ env.version_minor }}.latest
+          docker push $IMG:${{ env.version_major }}.latest
 
       - name: Trigger release
         uses: actions/create-release@v1
