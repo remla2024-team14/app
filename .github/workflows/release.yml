@@ -62,7 +62,12 @@ jobs:
         id: semantic-version
         run: |
           echo "GITHUB_REF: ${GITHUB_REF}"
-          VERSION=${GITHUB_REF:11}
+          if [[ "${{ steps.check_closed_pr.outputs.PR_CLOSED }}" == 'false' ]]; then
+            VERSION=${{ steps.bump.outputs.new_tag }}:1
+          else:
+            VERSION=${GITHUB_REF:11}
+          fi
+          echo "$VERSION"
           MAJOR=`echo "$VERSION" | cut -d . -f 1`
           MINOR=`echo "$VERSION" | cut -d . -f 2`
           PATCH=`echo "$VERSION" | cut -d . -f 3`
