@@ -65,7 +65,7 @@ jobs:
           if [[ "${{ steps.check_closed_pr.outputs.PR_CLOSED }}" != 'true' ]]; then
             echo "Case PR closed: the automatically bumped version will be used"
             VERSION=${{ steps.bump.outputs.new_tag }}:1
-          else:
+          else
             echo "Case pushed tag: the manually created tag will be used"
             VERSION=${GITHUB_REF:11}
           fi
