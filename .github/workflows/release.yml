@@ -62,9 +62,11 @@ jobs:
         id: semantic-version
         run: |
           echo "GITHUB_REF: ${GITHUB_REF}"
-          if [[ "${{ steps.check_closed_pr.outputs.PR_CLOSED }}" == 'false' ]]; then
+          if [[ "${{ steps.check_closed_pr.outputs.PR_CLOSED }}" != 'true' ]]; then
+            echo "Case PR closed: the automatically bumped version will be used"
             VERSION=${{ steps.bump.outputs.new_tag }}:1
           else:
+            echo "Case pushed tag: the manually created tag will be used"
             VERSION=${GITHUB_REF:11}
           fi
           echo "$VERSION"
