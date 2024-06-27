@@ -17,20 +17,15 @@ jobs:
         contents: write        # Needed for automatic patch bumping
 
     steps:
-      # Add a conditional step to check if the event was a closed PR
-      - name: Check if event is closed PR
-        id: check_closed_pr
-        run: echo "PR_CLOSED=$(jq -r '.pull_request.merged' "$GITHUB_EVENT_PATH")" >> $GITHUB_ENV
-
       - name: Checkout code
-        if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
+        if: github.event.pull_request.merged == true
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.merge_commit_sha }}   # Needed for automatic pre-releases
           fetch-depth: '0'
       
       - name: Checkout code
-        if: steps.check_closed_pr.outputs.PR_CLOSED != 'true'
+        if: github.event.pull_request.merged != true
         uses: actions/checkout@v3
 
       - name: Extract version
@@ -44,7 +39,7 @@ jobs:
       # Any commit message that includes #major, #minor, #patch, or #none will trigger the respective version bump. 
       # If no #major, #minor or #patch tag is contained in the merge commit message, it will bump whichever DEFAULT_BUMP is set to
       - name: Bump version and push tag
-        if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
+        if: github.event.pull_request.merged == true
         id: bump
         uses: anothrNick/github-tag-action@v1
         env:
@@ -55,7 +50,7 @@ jobs:
           PRERELEASE_SUFFIX: beta      # Suffix for your prerelease versions. Note this will only be used if a prerelease branch.
 
       - name: Check bump versioning output
-        if: steps.check_closed_pr.outputs.PR_CLOSED == 'true'
+        if: github.event.pull_request.merged == true
         run: |
           echo "Old Tag: ${{ steps.bump.outputs.old_tag }}"
           echo "New Tag: ${{ steps.bump.outputs.new_tag }}"
@@ -69,7 +64,7 @@ jobs:
         id: semantic-version
         run: |
           echo "GITHUB_REF: ${GITHUB_REF}"
-          if [[ "${{ steps.check_closed_pr.outputs.PR_CLOSED }}" == 'true' ]]; then
+          if [[ "${{ github.event.pull_request.merged }}" == 'true' ]]; then
             echo "Case PR closed: the automatically bumped version will be used"
             VERSION=${{ steps.bump.outputs.new_tag }}
           else
